@@ -1,16 +1,12 @@
 package breakout;
 
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 
+public class level2 extends level {
 
-public class level1 extends level {
     public static final String BRICK1_IMAGE = "brick1.gif";
     public static final String BRICK2_IMAGE = "brick2.gif";
     public static final String BRICK3_IMAGE = "brick3.gif";
@@ -41,25 +37,24 @@ public class level1 extends level {
     ArrayList<brick> brickList = new ArrayList<>();
     Group root = new Group();
 
-
-    public level1(){
+    public level2(){
         super();
     }
 
     public Group setupLevel(){
-        myBrick2.setX(myBrick1.getBoundsInLocal().getWidth());
-        myBrick3.setX(myBrick2.getBoundsInLocal().getWidth() * 2);
-        myBrick4.setX(myBrick3.getBoundsInLocal().getWidth() * 3);
+        myBrick2.setY(myBrick1.getBoundsInLocal().getHeight());
+        myBrick3.setY(myBrick2.getBoundsInLocal().getHeight() * 2);
+        myBrick4.setY(myBrick3.getBoundsInLocal().getHeight() * 3);
 
-        //brickList.add(myBrick1);
+        brickList.add(myBrick1);
         brickList.add(myBrick2);
-//        brickList.add(myBrick3);
-//        brickList.add(myBrick4);
+        brickList.add(myBrick3);
+        brickList.add(myBrick4);
 
-        //root.getChildren().add(myBrick1);
+        root.getChildren().add(myBrick1);
         root.getChildren().add(myBrick2);
-//        root.getChildren().add(myBrick3);
-//        root.getChildren().add(myBrick4);
+        root.getChildren().add(myBrick3);
+        root.getChildren().add(myBrick4);
 
         return root;
     }
@@ -67,5 +62,4 @@ public class level1 extends level {
     public ArrayList<brick> getBrickList(){
         return brickList;
     }
-
 }

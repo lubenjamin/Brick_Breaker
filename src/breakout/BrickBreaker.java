@@ -26,8 +26,8 @@ public class BrickBreaker extends Application{
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
     public static final Paint BACKGROUND = Color.AZURE;
     public static final Paint HIGHLIGHT = Color.OLIVEDRAB;
-    public static int BOUNCER_X_SPEED = -60;
-    public static int BOUNCER_Y_SPEED = -90;
+    public static int BOUNCER_X_SPEED = -30;
+    public static int BOUNCER_Y_SPEED = -60;
     public static final int MOVER_SPEED = 5;
 
     public static final String BOUNCER_IMAGE = "ball.gif";
@@ -36,15 +36,18 @@ public class BrickBreaker extends Application{
     Image bouncerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
     Image paddleImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
 
-    private Scene myScene;
-    private ImageView myBouncer;
-    private ImageView myPaddle;
+    private static Scene myScene;
+    private static Stage mainStage;
+    private bouncer myBouncer = new bouncer(bouncerImage);
+    private paddle myPaddle = new paddle(paddleImage);
     ArrayList<brick> brickList = new ArrayList<>();
     Group root = new Group();
+    int levelCount = 1;
 
 
     public void start (Stage stage){
         // attach scene to the stage and display it
+        mainStage = stage;
         myScene = setupGame(SIZE, SIZE, BACKGROUND);
         stage.setScene(myScene);
         stage.setTitle(TITLE);
@@ -57,15 +60,21 @@ public class BrickBreaker extends Application{
         animation.play();
     }
 
+
     // Create the game's "scene": what shapes will be in the game and their starting properties
     private Scene setupGame (int width, int height, Paint background) {
         // create one top level collection to organize the things in the scene
-        level1 temp = new level1();
-        root = temp.setupLevel();
-        brickList = temp.getBrickList();
+        if(levelCount == 1) {
+            level1 temp = new level1();
+            root = temp.setupLevel();
+            brickList = temp.getBrickList();
+        } else if(levelCount == 2){
+            level2 temp = new level2();
+            root = temp.setupLevel();
+            brickList = temp.getBrickList();
+        }
         // make some shapes and set their properties
-        myBouncer = new bouncer(bouncerImage);
-        myPaddle = new paddle(paddleImage);
+
         // x and y represent the top left corner, so center it in window
         myBouncer.setX(width / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
         myBouncer.setY(height / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
@@ -107,25 +116,17 @@ public class BrickBreaker extends Application{
 
         for(int i = 0; i < brickList.size(); i++){
             if(myBouncer.getBoundsInParent().intersects(brickList.get(i).getBoundsInParent())){
-                System.out.println("DEBUG");
-                BOUNCER_X_SPEED = BOUNCER_X_SPEED * -1;
                 BOUNCER_Y_SPEED = BOUNCER_Y_SPEED * -1;
                 brickList.get(i).setImage(null);
                 brickList.remove(i);
             }
         }
 
-//        if(myBouncer.getBoundsInParent().intersects(myBrick1.getBoundsInParent())){
-//            BOUNCER_X_SPEED = BOUNCER_X_SPEED * -1;
-//            BOUNCER_Y_SPEED = BOUNCER_Y_SPEED * -1;
-//            myBrick1.setImage(null);
-//        }
-//
-//        if(myBouncer.getBoundsInParent().intersects(myBrick2.getBoundsInParent())){
-//            BOUNCER_X_SPEED = BOUNCER_X_SPEED * -1;
-//            BOUNCER_Y_SPEED = BOUNCER_Y_SPEED * -1;
-//            myBrick2.setImage(null);
-//        }
+        if(brickList.size() == 0) {
+            levelCount++;
+            mainStage.setScene(setupGame(SIZE,SIZE,BACKGROUND));
+            step(elapsedTime);
+        }
 
         myBouncer.setX(myBouncer.getX() + BOUNCER_X_SPEED * elapsedTime);
         myBouncer.setY(myBouncer.getY() + BOUNCER_Y_SPEED * elapsedTime);
