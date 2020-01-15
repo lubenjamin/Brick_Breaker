@@ -39,8 +39,8 @@ public class BrickBreaker extends Application{
 
     private static Scene myScene;
     private static Stage mainStage;
-    private bouncer myBouncer = new bouncer(bouncerImage);
-    private paddle myPaddle = new paddle(paddleImage);
+    private bouncer myBouncer = new bouncer(bouncerImage,0);
+    private paddle myPaddle = new paddle(paddleImage,3);
     ArrayList<brick> brickList = new ArrayList<>();
     Group root = new Group();
     int levelCount = 1;
@@ -66,8 +66,8 @@ public class BrickBreaker extends Application{
     private Scene setupGame (int width, int height, Paint background) {
         // create one top level collection to organize the things in the scene
         level temp = new level1();
-        myBouncer = new bouncer(bouncerImage);
-        myPaddle = new paddle(paddleImage);
+        myBouncer = new bouncer(bouncerImage,0);
+        myPaddle = new paddle(paddleImage,3);
         root = new Group();
         myScene = temp.setupLevel(root, myPaddle, myBouncer);
         brickList = temp.getBrickList();
@@ -107,8 +107,6 @@ public class BrickBreaker extends Application{
         }
 
         if(myBouncer.getBoundsInParent().intersects(myPaddle.getBoundsInParent())){
-            System.out.println("DEBUG");
-
             double bouncerCenter = (myBouncer.getBoundsInParent().getMinX() + myBouncer.getBoundsInParent().getMaxX())/2;
             double paddleCenter = (myPaddle.getBoundsInParent().getMinX() + myPaddle.getBoundsInParent().getMaxX())/2;
             double centerDiff = (bouncerCenter - paddleCenter) / (myPaddle.getBoundsInLocal().getWidth());
@@ -119,19 +117,38 @@ public class BrickBreaker extends Application{
             BOUNCER_Y_SPEED = speedTotal * Math.cos(angle) * -1;
         }
 
+        if(myBouncer.getY() + myBouncer.getBoundsInLocal().getHeight() >= SIZE){
+            myPaddle.hitPoints = myPaddle.hitPoints - 1;
+            System.out.println(myPaddle.hitPoints);
+            if(myPaddle.hitPoints == 0){
+                exitScreen temp = new exitScreen();
+                root = new Group();
+                myScene = temp.setupLevel(root);
+                mainStage.setScene(myScene);
+            }
+            myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
+            myBouncer.setY(SIZE / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
+            BOUNCER_X_SPEED = 0;
+            BOUNCER_Y_SPEED = 130;
+        }
+
         for(int i = 0; i < brickList.size(); i++){
             if(myBouncer.getBoundsInParent().intersects(brickList.get(i).getBoundsInParent())){
                 BOUNCER_Y_SPEED = BOUNCER_Y_SPEED * -1;
-                brickList.get(i).setImage(null);
-                brickList.remove(i);
+                brickList.get(i).hitPoints = brickList.get(i).hitPoints - 1;
+                System.out.println(brickList.get(i).hitPoints);
+                if (brickList.get(i).hitPoints == 0) {
+                    brickList.get(i).setImage(null);
+                    brickList.remove(i);
+                }
             }
         }
 
         if(brickList.size() == 0) {
             levelCount++;
             level temp = new level2();
-            myBouncer = new bouncer(bouncerImage);
-            myPaddle = new paddle(paddleImage);
+            myBouncer = new bouncer(bouncerImage,0);
+            myPaddle = new paddle(paddleImage,3);
             root = new Group();
             myScene = temp.setupLevel(root, myPaddle, myBouncer);
             myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
