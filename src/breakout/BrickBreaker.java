@@ -14,6 +14,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -21,15 +24,17 @@ import java.util.ArrayList;
 public class BrickBreaker extends Application{
 
     public static final String TITLE = "BrickBreaker";
-    public static final int SIZE = 420;
+    public static final int SIZE = 560;
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
     public static final Paint BACKGROUND = Color.BLACK;
     public static final Paint HIGHLIGHT = Color.OLIVEDRAB;
-    public static double BOUNCER_X_SPEED = 0;
-    public static double BOUNCER_Y_SPEED = 130;
-    public static final int MOVER_SPEED = 5;
+    public static final double START_BOUNCER_X_SPEED = 0;
+    public static final double START_BOUNCER_Y_SPEED = -200;
+    public static double BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
+    public static double BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+    public static final int MOVER_SPEED = 7;
 
     public static final String BOUNCER_IMAGE = "ball.gif";
     public static final String PADDLE_IMAGE = "paddle.gif";
@@ -39,14 +44,14 @@ public class BrickBreaker extends Application{
 
     private static Scene myScene;
     private static Stage mainStage;
-    private bouncer myBouncer = new bouncer(bouncerImage,0);
-    private paddle myPaddle = new paddle(paddleImage,3);
+    private bouncer myBouncer = new bouncer(bouncerImage, 0);
+    private paddle myPaddle = new paddle(paddleImage, 3);;
     ArrayList<brick> brickList = new ArrayList<>();
     Group root = new Group();
-    int levelCount = 1;
+    int levelCount = 0;
 
 
-    public void start (Stage stage){
+    public void start (Stage stage) throws IOException{
         // attach scene to the stage and display it
         this.mainStage =  stage;
         myScene = setupGame(SIZE, SIZE, BACKGROUND);
@@ -54,7 +59,14 @@ public class BrickBreaker extends Application{
         mainStage.setTitle(TITLE);
         mainStage.show();
         // attach "game loop" to timeline to play it (basically just calling step() method repeatedly forever)
-        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(SECOND_DELAY));
+        KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> {
+            try {
+                step(SECOND_DELAY);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         Timeline animation = new Timeline();
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.getKeyFrames().add(frame);
@@ -63,29 +75,17 @@ public class BrickBreaker extends Application{
 
 
     // Create the game's "scene": what shapes will be in the game and their starting properties
-    private Scene setupGame (int width, int height, Paint background) {
+    private Scene setupGame (int width, int height, Paint background) throws IOException {
         // create one top level collection to organize the things in the scene
-        level temp = new level1();
-        myBouncer = new bouncer(bouncerImage,0);
-        myPaddle = new paddle(paddleImage,3);
+        titleScreen temp = new titleScreen();
+//        myBouncer = new bouncer(bouncerImage,0);
+//        myPaddle = new paddle(paddleImage,3);
         root = new Group();
-        myScene = temp.setupLevel(root, myPaddle, myBouncer);
-        brickList = temp.getBrickList();
-        // make some shapes and set their properties
+        myScene = temp.setupLevel(root);
+        mainStage.setScene(myScene);
+//        myScene = temp.setupLevel(root, myPaddle, myBouncer, "level1.txt");
+//        brickList = temp.getBrickList();
 
-        // x and y represent the top left corner, so center it in window
-//        myBouncer.setX(width / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-//        myBouncer.setY(height / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
-//        myPaddle.setX(width / 2 - myPaddle.getBoundsInLocal().getWidth() / 2);
-//        myPaddle.setY(height - myPaddle.getBoundsInLocal().getHeight());
-
-        // order added to the group is the order in which they are drawn
-//        root.getChildren().add(myPaddle);
-//        root.getChildren().add(myBouncer);
-
-        // create a place to see the shapes
-        //Scene scene = new Scene(root, width, height, background);
-        // respond to input
         myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
         //scene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
 
@@ -94,7 +94,7 @@ public class BrickBreaker extends Application{
 
     // Change properties of shapes in small ways to animate them over time
     // Note, there are more sophisticated ways to animate shapes, but these simple ways work fine to start
-    private void step (double elapsedTime) {
+    private void step (double elapsedTime) throws IOException{
         // update "actors" attributes
 
         // make bouncer bounce off walls
@@ -126,17 +126,22 @@ public class BrickBreaker extends Application{
                 myScene = temp.setupLevel(root);
                 mainStage.setScene(myScene);
             }
-            myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getWidth() / 2);
-            myBouncer.setY(SIZE / 2 - myBouncer.getBoundsInLocal().getHeight() / 2);
-            BOUNCER_X_SPEED = 0;
-            BOUNCER_Y_SPEED = 130;
+            myBouncer.setX(0);
+            myBouncer.setY(0);
+            myPaddle.setX(0);
+            myPaddle.setY(0);
+            myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
+            myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
+            myPaddle.setX(SIZE / 2 - myPaddle.getBoundsInLocal().getCenterX());
+            myPaddle.setY(SIZE - myPaddle.getBoundsInLocal().getHeight());
+            BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
+            BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
         }
 
         for(int i = 0; i < brickList.size(); i++){
             if(myBouncer.getBoundsInParent().intersects(brickList.get(i).getBoundsInParent())){
                 BOUNCER_Y_SPEED = BOUNCER_Y_SPEED * -1;
                 brickList.get(i).hitPoints = brickList.get(i).hitPoints - 1;
-                System.out.println(brickList.get(i).hitPoints);
                 if (brickList.get(i).hitPoints == 0) {
                     brickList.get(i).setImage(null);
                     brickList.remove(i);
@@ -145,17 +150,31 @@ public class BrickBreaker extends Application{
         }
 
         if(brickList.size() == 0) {
-            levelCount++;
-            level temp = new level2();
-            myBouncer = new bouncer(bouncerImage,0);
-            myPaddle = new paddle(paddleImage,3);
-            root = new Group();
-            myScene = temp.setupLevel(root, myPaddle, myBouncer);
-            myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-            brickList = temp.getBrickList();
-            mainStage.setScene(myScene);
-            BOUNCER_X_SPEED = 0;
-            BOUNCER_Y_SPEED = 130;
+            if(levelCount == 1) {
+                level temp = new level();
+                myBouncer = new bouncer(bouncerImage, 0);
+                myPaddle = new paddle(paddleImage, 3);
+                root = new Group();
+                myScene = temp.setupLevel(root, myPaddle, myBouncer, "level1.txt");
+                myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+                brickList = temp.getBrickList();
+                mainStage.setScene(myScene);
+                BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
+                BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+                levelCount++;
+            } else if(levelCount == 2) {
+                level temp = new level();
+                myBouncer = new bouncer(bouncerImage, 0);
+                myPaddle = new paddle(paddleImage, 3);
+                root = new Group();
+                myScene = temp.setupLevel(root, myPaddle, myBouncer, "level2.txt");
+                myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+                brickList = temp.getBrickList();
+                mainStage.setScene(myScene);
+                BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
+                BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+                levelCount++;
+            }
         }
 
         myBouncer.setX(myBouncer.getX() + BOUNCER_X_SPEED * elapsedTime);
@@ -165,11 +184,15 @@ public class BrickBreaker extends Application{
 
     // What to do each time a key is pressed
     private void handleKeyInput (KeyCode code) {
-        if (code == KeyCode.RIGHT && myPaddle.getX() + myPaddle.getBoundsInLocal().getWidth() != SIZE) {
+        if (code == KeyCode.RIGHT && myPaddle.getX() + myPaddle.getBoundsInLocal().getWidth() <= SIZE) {
             myPaddle.setX(myPaddle.getX() + MOVER_SPEED);
         }
-        else if (code == KeyCode.LEFT && myPaddle.getX() != 0) {
+        else if (code == KeyCode.LEFT && myPaddle.getX() >= 0) {
             myPaddle.setX(myPaddle.getX() - MOVER_SPEED);
+        }
+
+        else if(code == KeyCode.SPACE){
+            levelCount++;
         }
     }
 

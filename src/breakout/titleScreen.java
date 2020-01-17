@@ -8,20 +8,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class exitScreen extends level {
+public class titleScreen extends level {
 
     public static final int SIZE = 560;
     public static final Paint BACKGROUND = Color.BLACK;
 
     Scene newLevel;
 
-
-    public exitScreen(){
+    public titleScreen(){
         super();
     }
 
     public Scene setupLevel(Group root){
-        Text endText = new Text("YOU LOSE XD");
+        Text endText = new Text("BRICK BREAKER");
         endText.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 40));
         endText.setFill(Color.RED);
         endText.setX(SIZE / 2 - endText.getBoundsInLocal().getWidth() / 2);
@@ -30,5 +29,4 @@ public class exitScreen extends level {
         newLevel = new Scene(root, SIZE, SIZE, BACKGROUND);
         return newLevel;
     }
-
 }
