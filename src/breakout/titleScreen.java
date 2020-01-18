@@ -23,7 +23,7 @@ public class titleScreen extends level {
     public Scene setupLevel(Group root){
         Text title = new Text("BRICK BREAKER\n");
         title.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 40));
-        title.setFill(Color.NAVAJOWHITE);
+        title.setFill(Color.LIMEGREEN);
         title.setX(SIZE / 2 - title.getBoundsInLocal().getWidth() / 2);
         title.setY(40);
 

@@ -2,10 +2,9 @@ package breakout;
 
 import javafx.scene.image.Image;
 
-public class pointsPower extends powerUp {
-    public pointsPower(Image image){
+public class lifePower extends powerUp {
+    public lifePower(Image image){
         super(image);
 
     }
-
 }

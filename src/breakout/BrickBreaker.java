@@ -25,34 +25,41 @@ import java.util.ArrayList;
 public class BrickBreaker extends Application{
 
     public static final String TITLE = "BrickBreaker";
-    public static final int SIZE = 560;
+    public static final int SIZE = 630;
     public static final int FRAMES_PER_SECOND = 60;
     public static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
     public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
     public static final Paint BACKGROUND = Color.BLACK;
     public static final Paint HIGHLIGHT = Color.OLIVEDRAB;
     public static final double START_BOUNCER_X_SPEED = 0;
-    public static final double START_BOUNCER_Y_SPEED = -200;
+    public static final double START_BOUNCER_Y_SPEED = 200;
+    public static final double POWER_Y_DROP_SPEED = 100;
+    public static double POWER_Y_SPEED = 0;
     public static double BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
     public static double BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
     public static final int MOVER_SPEED = 7;
 
     public static final String BOUNCER_IMAGE = "ball.gif";
     public static final String PADDLE_IMAGE = "paddle.gif";
+    public static final String LIFE_POWER_IMAGE = "laserpower.gif";
+
 
     Image bouncerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
     Image paddleImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
+    Image lifePowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(LIFE_POWER_IMAGE));
+
 
     private static Scene myScene;
     private static Stage mainStage;
     private bouncer myBouncer = new bouncer(bouncerImage);
-    private paddle myPaddle = new paddle(paddleImage, 3);;
+    private paddle myPaddle = new paddle(paddleImage, 3);
     ArrayList<brick> brickList = new ArrayList<>();
     Group root = new Group();
     int levelCount = 0;
     Text hpText = new Text();
     Text scoreText = new Text();
     int score = 0;
+    private lifePower myLifePower = new lifePower(lifePowerImage);
 
 
     public void start (Stage stage) throws IOException{
@@ -138,14 +145,25 @@ public class BrickBreaker extends Application{
         for(int i = 0; i < brickList.size(); i++){
             if(myBouncer.getBoundsInParent().intersects(brickList.get(i).getBoundsInParent())){
                 BOUNCER_Y_SPEED = BOUNCER_Y_SPEED * -1;
+                if(brickList.get(i).hitPoints == 1){
+                    POWER_Y_SPEED = POWER_Y_DROP_SPEED;
+                }
                 brickList.get(i).hitPoints = brickList.get(i).hitPoints - 1;
                 if (brickList.get(i).hitPoints == 0) {
                     brickList.get(i).setImage(null);
-                    brickList.remove(i);
                     score++;
                     scoreText.setText("SCORE: " + score);
+                    brickList.remove(i);
                 }
             }
+        }
+
+
+        if(myPaddle.getBoundsInParent().intersects(myLifePower.getBoundsInParent())){
+            POWER_Y_SPEED = POWER_Y_SPEED * -1;
+            myPaddle.hitPoints = myPaddle.hitPoints + 1;
+            myLifePower.setImage(null);
+            hpText.setText("LIVES: " + myPaddle.hitPoints);
         }
 
         if(brickList.size() == 0) {
@@ -160,6 +178,7 @@ public class BrickBreaker extends Application{
 
         myBouncer.setX(myBouncer.getX() + BOUNCER_X_SPEED * elapsedTime);
         myBouncer.setY(myBouncer.getY() + BOUNCER_Y_SPEED * elapsedTime);
+        myLifePower.setY(myLifePower.getY() + POWER_Y_SPEED * elapsedTime);
 
     }
 
@@ -174,9 +193,11 @@ public class BrickBreaker extends Application{
 
         else if(code == KeyCode.SPACE){
             levelCount++;
-        } else if(code == KeyCode.L){
+        } else if(code == KeyCode.DIGIT1){
             makeLevel("level1.txt");
             levelCount = 2;
+            score = 0;
+            scoreText.setText("SCORE: " + score);
         } else if(code == KeyCode.R){
             reset();
         }
@@ -186,8 +207,9 @@ public class BrickBreaker extends Application{
         level temp = new level();
         myBouncer = new bouncer(bouncerImage);
         myPaddle = new paddle(paddleImage, 3);
+        myLifePower = new lifePower(lifePowerImage);
         root = new Group();
-        myScene = temp.setupLevel(root, myPaddle, myBouncer, levelNumber, hpText, scoreText, score);
+        myScene = temp.setupLevel(root, myPaddle, myBouncer, levelNumber, hpText, scoreText, score, myLifePower);
         myScene.setOnKeyPressed(e -> {
             try {
                 handleKeyInput(e.getCode());
@@ -199,6 +221,7 @@ public class BrickBreaker extends Application{
         mainStage.setScene(myScene);
         BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
         BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+        POWER_Y_SPEED = 0;
     }
 
     public void reset(){
@@ -213,7 +236,6 @@ public class BrickBreaker extends Application{
         BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
         BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
     }
-
     // What to do each time a key is pressed
 //    private void handleMouseInput (double x, double y) {
 //        if (myGrower.contains(x, y)) {

@@ -2,6 +2,7 @@ package breakout;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -19,17 +20,21 @@ import java.util.Scanner;
 
 public class level extends Group {
 
-    public static final int SIZE = 560;
+    public static final int SIZE = 630;
     public static final Paint BACKGROUND = Color.BLACK;
 
     ArrayList<brick> brickList = new ArrayList<>();
     Scene newLevel;
 
+
+
     public level(){
         super();
     }
 
-    public Scene setupLevel(Group root, paddle myPaddle, bouncer myBouncer, String fileName, Text hpText, Text scoreText, int score) throws IOException {
+    public Scene setupLevel(Group root, paddle myPaddle, bouncer myBouncer, String fileName, Text hpText, Text scoreText, int score,
+                            lifePower myLifePower) throws IOException {
+
         myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
         myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
         myPaddle.setX(SIZE / 2 - myPaddle.getBoundsInLocal().getCenterX());
@@ -51,6 +56,7 @@ public class level extends Group {
         root.getChildren().add(scoreText);
         root.getChildren().add(myPaddle);
         root.getChildren().add(myBouncer);
+        root.getChildren().add(myLifePower);
         Path source = Paths.get("./resources/"+fileName);
         Scanner sc = new Scanner(source);
         int rows = 10;
@@ -65,6 +71,12 @@ public class level extends Group {
                         newBrick.setY(newBrick.getBoundsInLocal().getHeight() * i);
                         root.getChildren().add(newBrick);
                         brickList.add(newBrick);
+
+                        if(Integer.parseInt(line[j]) == 1){
+                            System.out.println("DEBUG");
+                            myLifePower.setX(newBrick.getX());
+                            myLifePower.setY(newBrick.getY());
+                        }
                     }
                 }
             }
