@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -44,11 +45,14 @@ public class BrickBreaker extends Application{
 
     private static Scene myScene;
     private static Stage mainStage;
-    private bouncer myBouncer = new bouncer(bouncerImage, 0);
+    private bouncer myBouncer = new bouncer(bouncerImage);
     private paddle myPaddle = new paddle(paddleImage, 3);;
     ArrayList<brick> brickList = new ArrayList<>();
     Group root = new Group();
     int levelCount = 0;
+    Text hpText = new Text();
+    Text scoreText = new Text();
+    int score = 0;
 
 
     public void start (Stage stage) throws IOException{
@@ -78,15 +82,16 @@ public class BrickBreaker extends Application{
     private Scene setupGame (int width, int height, Paint background) throws IOException {
         // create one top level collection to organize the things in the scene
         titleScreen temp = new titleScreen();
-//        myBouncer = new bouncer(bouncerImage,0);
-//        myPaddle = new paddle(paddleImage,3);
         root = new Group();
         myScene = temp.setupLevel(root);
         mainStage.setScene(myScene);
-//        myScene = temp.setupLevel(root, myPaddle, myBouncer, "level1.txt");
-//        brickList = temp.getBrickList();
-
-        myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+        myScene.setOnKeyPressed(e -> {
+            try {
+                handleKeyInput(e.getCode());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         //scene.setOnMouseClicked(e -> handleMouseInput(e.getX(), e.getY()));
 
         return myScene;
@@ -119,6 +124,7 @@ public class BrickBreaker extends Application{
 
         if(myBouncer.getY() + myBouncer.getBoundsInLocal().getHeight() >= SIZE){
             myPaddle.hitPoints = myPaddle.hitPoints - 1;
+            hpText.setText("LIVES: " + myPaddle.hitPoints);
             System.out.println(myPaddle.hitPoints);
             if(myPaddle.hitPoints == 0){
                 exitScreen temp = new exitScreen();
@@ -126,16 +132,7 @@ public class BrickBreaker extends Application{
                 myScene = temp.setupLevel(root);
                 mainStage.setScene(myScene);
             }
-            myBouncer.setX(0);
-            myBouncer.setY(0);
-            myPaddle.setX(0);
-            myPaddle.setY(0);
-            myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
-            myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
-            myPaddle.setX(SIZE / 2 - myPaddle.getBoundsInLocal().getCenterX());
-            myPaddle.setY(SIZE - myPaddle.getBoundsInLocal().getHeight());
-            BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
-            BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+            reset();
         }
 
         for(int i = 0; i < brickList.size(); i++){
@@ -145,35 +142,19 @@ public class BrickBreaker extends Application{
                 if (brickList.get(i).hitPoints == 0) {
                     brickList.get(i).setImage(null);
                     brickList.remove(i);
+                    score++;
+                    scoreText.setText("SCORE: " + score);
                 }
             }
         }
 
         if(brickList.size() == 0) {
             if(levelCount == 1) {
-                level temp = new level();
-                myBouncer = new bouncer(bouncerImage, 0);
-                myPaddle = new paddle(paddleImage, 3);
-                root = new Group();
-                myScene = temp.setupLevel(root, myPaddle, myBouncer, "level1.txt");
-                myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-                brickList = temp.getBrickList();
-                mainStage.setScene(myScene);
-                BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
-                BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
-                levelCount++;
+                makeLevel("level1.txt");
+                levelCount = 2;
             } else if(levelCount == 2) {
-                level temp = new level();
-                myBouncer = new bouncer(bouncerImage, 0);
-                myPaddle = new paddle(paddleImage, 3);
-                root = new Group();
-                myScene = temp.setupLevel(root, myPaddle, myBouncer, "level2.txt");
-                myScene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-                brickList = temp.getBrickList();
-                mainStage.setScene(myScene);
-                BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
-                BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
-                levelCount++;
+                makeLevel("level2.txt");
+                levelCount = 3;
             }
         }
 
@@ -183,7 +164,7 @@ public class BrickBreaker extends Application{
     }
 
     // What to do each time a key is pressed
-    private void handleKeyInput (KeyCode code) {
+    private void handleKeyInput (KeyCode code) throws IOException {
         if (code == KeyCode.RIGHT && myPaddle.getX() + myPaddle.getBoundsInLocal().getWidth() <= SIZE) {
             myPaddle.setX(myPaddle.getX() + MOVER_SPEED);
         }
@@ -193,7 +174,44 @@ public class BrickBreaker extends Application{
 
         else if(code == KeyCode.SPACE){
             levelCount++;
+        } else if(code == KeyCode.L){
+            makeLevel("level1.txt");
+            levelCount = 2;
+        } else if(code == KeyCode.R){
+            reset();
         }
+    }
+
+    private void makeLevel(String levelNumber) throws IOException {
+        level temp = new level();
+        myBouncer = new bouncer(bouncerImage);
+        myPaddle = new paddle(paddleImage, 3);
+        root = new Group();
+        myScene = temp.setupLevel(root, myPaddle, myBouncer, levelNumber, hpText, scoreText, score);
+        myScene.setOnKeyPressed(e -> {
+            try {
+                handleKeyInput(e.getCode());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        brickList = temp.getBrickList();
+        mainStage.setScene(myScene);
+        BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
+        BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+    }
+
+    public void reset(){
+        myBouncer.setX(0);
+        myBouncer.setY(0);
+        myPaddle.setX(0);
+        myPaddle.setY(0);
+        myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
+        myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
+        myPaddle.setX(SIZE / 2 - myPaddle.getBoundsInLocal().getCenterX());
+        myPaddle.setY(SIZE - myPaddle.getBoundsInLocal().getHeight());
+        BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
+        BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
     }
 
     // What to do each time a key is pressed

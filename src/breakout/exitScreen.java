@@ -21,8 +21,8 @@ public class exitScreen extends level {
     }
 
     public Scene setupLevel(Group root){
-        Text endText = new Text("YOU LOSE XD");
-        endText.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 40));
+        Text endText = new Text("YOU LOSE");
+        endText.setFont(Font.font("Veranda", FontWeight.EXTRA_BOLD, 40));
         endText.setFill(Color.RED);
         endText.setX(SIZE / 2 - endText.getBoundsInLocal().getWidth() / 2);
         endText.setY(SIZE / 2 - endText.getBoundsInLocal().getHeight() / 2);
