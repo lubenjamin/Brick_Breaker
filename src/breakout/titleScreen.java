@@ -2,6 +2,8 @@ package breakout;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -13,6 +15,12 @@ public class titleScreen extends level {
 
     public static final int SIZE = 560;
     public static final Paint BACKGROUND = Color.BLACK;
+    public static final String LOGO_IMAGE = "logo.gif";
+    Image logoImage = new Image(this.getClass().getClassLoader().getResourceAsStream(LOGO_IMAGE));
+    ImageView myLogo = new ImageView(logoImage);
+
+
+
 
     Scene newLevel;
 
@@ -21,16 +29,17 @@ public class titleScreen extends level {
     }
 
     public Scene setupLevel(Group root){
-        Text title = new Text("BRICK BREAKER\n");
-        title.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 40));
-        title.setFill(Color.LIMEGREEN);
+//        Text title = new Text("BRICK BREAKER\n");
+//        title.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 40));
+//        title.setFill(Color.BROWN);
+        ImageView title = myLogo;
         title.setX(SIZE / 2 - title.getBoundsInLocal().getWidth() / 2);
-        title.setY(40);
+        //title.setY(title.getBoundsInLocal().getHeight() / 2);
 
         Text rules = new Text("");
 
         Text directions = new Text("PRESS SPACE TO START");
-        directions.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 10));
+        directions.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
         directions.setFill(Color.WHITE);
         directions.setX(SIZE / 2 - directions.getBoundsInLocal().getWidth() / 2);
         directions.setY(SIZE / 2 - title.getBoundsInLocal().getHeight() / 2 + title.getBoundsInLocal().getHeight());

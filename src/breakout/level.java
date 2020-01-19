@@ -9,13 +9,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class level extends Group {
@@ -24,16 +22,16 @@ public class level extends Group {
     public static final Paint BACKGROUND = Color.BLACK;
 
     ArrayList<brick> brickList = new ArrayList<>();
+    ArrayList<Integer> powerList = new ArrayList<>();
+
     Scene newLevel;
-
-
 
     public level(){
         super();
     }
 
     public Scene setupLevel(Group root, paddle myPaddle, bouncer myBouncer, String fileName, Text hpText, Text scoreText, int score,
-                            lifePower myLifePower) throws IOException {
+                            lifePower myLifePower, speedPower mySpeedPower) throws IOException {
 
         myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
         myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
@@ -57,6 +55,9 @@ public class level extends Group {
         root.getChildren().add(myPaddle);
         root.getChildren().add(myBouncer);
         root.getChildren().add(myLifePower);
+        root.getChildren().add(mySpeedPower);
+
+
         Path source = Paths.get("./resources/"+fileName);
         Scanner sc = new Scanner(source);
         int rows = 10;
@@ -64,7 +65,7 @@ public class level extends Group {
         while (sc.hasNextLine()) {
             for (int i = 0; i < 10; i++) {
                 String[] line = sc.nextLine().split(" ");
-                for (int j = 0; j < 8; j++) {
+                for (int j = 0; j < 9; j++) {
                     if(Integer.parseInt(line[j]) != 0){
                         brick newBrick = new brick(null, 0).returnBrick(Integer.parseInt(line[j]));
                         newBrick.setX(newBrick.getBoundsInLocal().getWidth() * j);
@@ -72,15 +73,25 @@ public class level extends Group {
                         root.getChildren().add(newBrick);
                         brickList.add(newBrick);
 
-                        if(Integer.parseInt(line[j]) == 1){
-                            System.out.println("DEBUG");
-                            myLifePower.setX(newBrick.getX());
-                            myLifePower.setY(newBrick.getY());
-                        }
+//                        if(Integer.parseInt(line[j]) == 1){
+//                            System.out.println("DEBUG");
+//                            myLifePower.setX(newBrick.getX());
+//                            myLifePower.setY(newBrick.getY());
+//                        }
                     }
                 }
             }
         }
+
+        for(int i = 0; i < 2; i++){
+            powerList.add(generateRandomInt(brickList.size()));
+        }
+
+        myLifePower.setX(brickList.get(powerList.get(0)).getX());
+        myLifePower.setY(brickList.get(powerList.get(0)).getY());
+
+        mySpeedPower.setX(brickList.get(powerList.get(1)).getX());
+        mySpeedPower.setY(brickList.get(powerList.get(1)).getY());
 
 
         newLevel = new Scene(root, SIZE, SIZE, BACKGROUND);
@@ -90,4 +101,14 @@ public class level extends Group {
     public ArrayList<brick> getBrickList(){
         return brickList;
     }
+
+    public ArrayList<Integer> getPowerList(){
+        return powerList;
+    }
+
+    public static int generateRandomInt(int upperRange){
+        Random random = new Random();
+        return random.nextInt(upperRange);
+    }
+
 }
