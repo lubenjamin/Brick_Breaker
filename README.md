@@ -20,7 +20,6 @@ Brickbreaker guide for level design inspiration
 
 Various stackoverflow posts
 
-
 ### Running the Program
 
 ####Main class: 
@@ -99,4 +98,6 @@ For the future it would be more helpful to have a little more direction
 when it comes to abstraction, however there definitely is value in 
 having to figure it out without assistance. The resources given in 
 lab_bounce is definitely sufficient to complete the project. In terms of 
-time frame, I believe the given time is sufficient for finishing.  
+time frame, I believe the given time is sufficient for finishing. Overall the
+project was a very good introduction to object oriented programming, definitely
+sets up a good foundation for the assignments for the rest of the course. 
