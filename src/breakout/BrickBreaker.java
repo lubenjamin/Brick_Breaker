@@ -46,12 +46,12 @@ public class BrickBreaker extends Application{
     private static final String PADDLE_POWER_IMAGE = "extraballpower.gif";
     private static final String LONG_PADDLE_IMAGE = "long_paddle.gif";
 
-    private Image bouncerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
-    private Image paddleImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
-    private Image lifePowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(LIFE_POWER_IMAGE));
-    private Image speedPowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(SPEED_POWER_IMAGE));
-    private Image paddlePowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_POWER_IMAGE));
-    private Image longPaddleImage = new Image(this.getClass().getClassLoader().getResourceAsStream(LONG_PADDLE_IMAGE));
+    Image bouncerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(BOUNCER_IMAGE));
+    Image paddleImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_IMAGE));
+    Image lifePowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(LIFE_POWER_IMAGE));
+    Image speedPowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(SPEED_POWER_IMAGE));
+    Image paddlePowerImage = new Image(this.getClass().getClassLoader().getResourceAsStream(PADDLE_POWER_IMAGE));
+    Image longPaddleImage = new Image(this.getClass().getClassLoader().getResourceAsStream(LONG_PADDLE_IMAGE));
 
     private static Scene myScene;
     private static Stage mainStage;
