@@ -264,6 +264,8 @@ public class BrickBreaker extends Application{
                 theme.play(50);
                 levelCount = 4;
             } else if(levelCount == 4) {
+                theme.stop();
+                theme.play(50);
                 winScreen temp = new winScreen();
                 root = new Group();
                 myScene = temp.setupLevel(root, score, brickKills);
