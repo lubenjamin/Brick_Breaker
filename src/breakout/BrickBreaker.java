@@ -250,12 +250,18 @@ public class BrickBreaker extends Application{
         if(brickList.size() == 0) {
             if(levelCount == 1) {
                 makeLevel("level1.txt");
+                theme.stop();
+                theme.play(50);
                 levelCount = 2;
             } else if(levelCount == 2) {
                 makeLevel("level2.txt");
+                theme.stop();
+                theme.play(50);
                 levelCount = 3;
             } else if(levelCount == 3) {
                 makeLevel("level3.txt");
+                theme.stop();
+                theme.play(50);
                 levelCount = 4;
             } else if(levelCount == 4) {
                 winScreen temp = new winScreen();
@@ -299,12 +305,18 @@ public class BrickBreaker extends Application{
             levelCount++;
         } else if(code == KeyCode.DIGIT1){
             makeLevel("level1.txt");
+            theme.stop();
+            theme.play(50);
             levelCount = 2;
         } else if(code == KeyCode.DIGIT2) {
             makeLevel("level2.txt");
+            theme.stop();
+            theme.play(50);
             levelCount = 3;
         } else if(code == KeyCode.DIGIT3) {
             makeLevel("level3.txt");
+            theme.stop();
+            theme.play(50);
             levelCount = 4;
         } else if(code == KeyCode.R){
             reset();

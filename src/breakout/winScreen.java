@@ -33,8 +33,8 @@ public class winScreen extends level {
     public Scene setupLevel(Group root, int score, int brickKills){
         Text winText = new Text("YOU WIN\n\n SCORE: " + score + "\n\n" + "BRICKS KILLED: " + brickKills +
                 "\n\n" + "PRESS '1' TO PLAY AGAIN");
-        winText.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
-        winText.setFill(Color.WHITE);
+        winText.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 40));
+        winText.setFill(Color.LIMEGREEN);
         winText.setTextAlignment(TextAlignment.CENTER);
         winText.setX(SIZE / 2 - winText.getBoundsInLocal().getWidth() / 2);
         winText.setY(SIZE / 2 - winText.getBoundsInLocal().getHeight() / 2);

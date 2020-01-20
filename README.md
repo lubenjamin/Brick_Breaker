@@ -59,6 +59,11 @@ response
 When the ball hits the intersection of two bricks, regardless of the bricks hp,
 both bricks instantly break
 
+If the ball gets stuck between the side of the paddle and wall a bunch
+of bounces will occur and the music stops
+
+
+
 ####Extra credit: 
 
 Advanced paddle physics - ball will bounce off the paddle at various
