@@ -144,6 +144,8 @@ public class BrickBreaker extends Application{
 
         /*
         - ball and paddle detection
+        - ball's resulting direction is dependent on where on the paddle it hits
+        - sound is played when collision occurs
          */
         if(myBouncer.getBoundsInParent().intersects(myPaddle.getBoundsInParent())){
             double bouncerCenter = (myBouncer.getBoundsInParent().getMinX() + myBouncer.getBoundsInParent().getMaxX())/2;
@@ -187,6 +189,7 @@ public class BrickBreaker extends Application{
         /*
         - run through all the bricks on the level to see if any are hit by the ball
         - if the brick is destroyed remove it from the scene and activate a power up if necessary
+        - when the brick loses health and is not destroyed update the appearance of the brick
          */
         for(int i = 0; i < brickList.size(); i++){
             if(myBouncer.getBoundsInParent().intersects(brickList.get(i).getBoundsInParent())){
@@ -296,18 +299,12 @@ public class BrickBreaker extends Application{
         } else if(code == KeyCode.DIGIT1){
             makeLevel("level1.txt");
             levelCount = 2;
-            score = 0;
-            scoreText.setText("SCORE: " + score);
         } else if(code == KeyCode.DIGIT2) {
             makeLevel("level2.txt");
             levelCount = 3;
-            score = 0;
-            scoreText.setText("SCORE: " + score);
         } else if(code == KeyCode.DIGIT3) {
             makeLevel("level3.txt");
             levelCount = 4;
-            score = 0;
-            scoreText.setText("SCORE: " + score);
         } else if(code == KeyCode.R){
             reset();
         } else if(code == KeyCode.F){
@@ -317,6 +314,8 @@ public class BrickBreaker extends Application{
 
     /*
     - construct a desired level by passing in a text file
+    - assign the level to the key event handler
+    - reset the speeds of all level elements
      */
     private void makeLevel(String levelNumber) throws IOException {
         level temp = new level();
