@@ -100,6 +100,7 @@ public class BrickBreaker extends Application{
     /*
     - sets up the title screen
     - depends on reset which places the paddle and ball in the correct positions
+    - returns the scene to be displayed
      */
     private Scene setupGame (int width, int height, Paint background) throws IOException {
         theme.play(50);
