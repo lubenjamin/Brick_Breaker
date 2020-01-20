@@ -250,22 +250,18 @@ public class BrickBreaker extends Application{
         if(brickList.size() == 0) {
             if(levelCount == 1) {
                 makeLevel("level1.txt");
-                theme.stop();
-                theme.play(50);
+                themeReset();
                 levelCount = 2;
             } else if(levelCount == 2) {
                 makeLevel("level2.txt");
-                theme.stop();
-                theme.play(50);
+                themeReset();
                 levelCount = 3;
             } else if(levelCount == 3) {
                 makeLevel("level3.txt");
-                theme.stop();
-                theme.play(50);
+                themeReset();
                 levelCount = 4;
             } else if(levelCount == 4) {
-                theme.stop();
-                theme.play(50);
+                themeReset();
                 winScreen temp = new winScreen();
                 root = new Group();
                 myScene = temp.setupLevel(root, score, brickKills);
@@ -307,18 +303,15 @@ public class BrickBreaker extends Application{
             levelCount++;
         } else if(code == KeyCode.DIGIT1){
             makeLevel("level1.txt");
-            theme.stop();
-            theme.play(50);
+            themeReset();
             levelCount = 2;
         } else if(code == KeyCode.DIGIT2) {
             makeLevel("level2.txt");
-            theme.stop();
-            theme.play(50);
+            themeReset();
             levelCount = 3;
         } else if(code == KeyCode.DIGIT3) {
             makeLevel("level3.txt");
-            theme.stop();
-            theme.play(50);
+            themeReset();
             levelCount = 4;
         } else if(code == KeyCode.R){
             reset();
@@ -373,6 +366,11 @@ public class BrickBreaker extends Application{
         myPaddle.setY(SIZE - myPaddle.getBoundsInLocal().getHeight());
         BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
         BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
+    }
+
+    private void themeReset(){
+        theme.stop();
+        theme.play(50);
     }
 
     /*
