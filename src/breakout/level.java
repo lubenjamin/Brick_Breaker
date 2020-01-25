@@ -17,20 +17,22 @@ import java.util.Random;
 import java.util.Scanner;
 
 /*
-- level is one of the fundamental classes of the game
-- title screen, exit screen, and all levels are all level objects
+- level creates any level based off a level text file
+- I believe it is well designed because it allows the user to easily create levels, modify levels,
+and freely customize the appearance of the level
+- Where and how power ups are generated can be modified in this class as well, for example if one were to want to have multiple
+of the same power up in a level, such modifications can be done within this class
+- level class also implements various element objects such as the paddle, ball, and bricks
+- The implementation of subroutines mainly for object placement helps clean this code and makes it more reasonable by removing
+redundancies that were present in the old code
  */
 
 public class level extends Group {
-
-    public static final int SIZE = 630;
-    public static final Paint BACKGROUND = Color.BLACK;
-
-    ArrayList<brick> brickList = new ArrayList<>();
-    ArrayList<Integer> powerList = new ArrayList<>();
-
-    Scene newLevel;
-
+    private static final int SIZE = 630;
+    private static final Paint BACKGROUND = Color.BLACK;
+    private ArrayList<brick> brickList = new ArrayList<>();
+    private ArrayList<Integer> powerList = new ArrayList<>();
+    private Scene newLevel;
     /*
     - construct a basic level
      */
@@ -50,10 +52,7 @@ public class level extends Group {
         /*
         - reset the position of bouncer and paddle
          */
-        myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
-        myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
-        myPaddle.setX(SIZE / 2 - myPaddle.getBoundsInLocal().getCenterX());
-        myPaddle.setY(SIZE - myPaddle.getBoundsInLocal().getHeight());
+        center(myPaddle, myBouncer, SIZE);
 
         /*
         - set the correct position and values of score and life indicators
@@ -111,17 +110,24 @@ public class level extends Group {
             powerList.add(generateRandomInt(brickList.size()));
         }
 
-        myLifePower.setX(brickList.get(powerList.get(0)).getX());
-        myLifePower.setY(brickList.get(powerList.get(0)).getY());
-
-        mySpeedPower.setX(brickList.get(powerList.get(1)).getX());
-        mySpeedPower.setY(brickList.get(powerList.get(1)).getY());
-
-        myPaddlePower.setX(brickList.get(powerList.get(2)).getX());
-        myPaddlePower.setY(brickList.get(powerList.get(2)).getY());
+        centerPowerUp(myLifePower,0);
+        centerPowerUp(mySpeedPower,1);
+        centerPowerUp(myPaddlePower,2);
 
         newLevel = new Scene(root, SIZE, SIZE, BACKGROUND);
         return newLevel;
+    }
+
+    public static void center(paddle myPaddle, bouncer myBouncer, int size) {
+        myBouncer.setX(size / 2 - myBouncer.getBoundsInLocal().getCenterX());
+        myBouncer.setY(size - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
+        myPaddle.setX(size / 2 - myPaddle.getBoundsInLocal().getCenterX());
+        myPaddle.setY(size - myPaddle.getBoundsInLocal().getHeight());
+    }
+
+    private void centerPowerUp(powerUp myPowerUp, int type){
+        myPowerUp.setX(brickList.get(powerList.get(type)).getX());
+        myPowerUp.setY(brickList.get(powerList.get(type)).getY());
     }
 
     /*
@@ -134,9 +140,8 @@ public class level extends Group {
     /*
     - generate random integers which are used to find a power ups corresponding bricks
      */
-    public static int generateRandomInt(int upperRange){
+    private static int generateRandomInt(int upperRange){
         Random random = new Random();
         return random.nextInt(upperRange);
     }
-
 }

@@ -225,23 +225,17 @@ public class BrickBreaker extends Application{
          */
         if(myPaddle.getBoundsInParent().intersects(myLifePower.getBoundsInParent())){
             LIFE_POWER_Y_SPEED = LIFE_POWER_Y_SPEED * -1;
-            myPaddle.hitPoints = myPaddle.hitPoints + 1;
-            myLifePower.setImage(null);
-            hpText.setText("LIVES: " + myPaddle.hitPoints);
+            myLifePower.powerTrigger(myPaddle, myLifePower, hpText);
         }
 
         if(myPaddle.getBoundsInParent().intersects(mySpeedPower.getBoundsInParent())){
             SPEED_POWER_Y_SPEED = SPEED_POWER_Y_SPEED * -1;
-            mySpeedPower.setImage(null);
-            for(brick i : brickList){
-                i.hitPoints = 1;
-            }
+            mySpeedPower.powerTrigger(myPaddle, mySpeedPower, hpText, brickList);
         }
 
         if(myPaddle.getBoundsInParent().intersects(myPaddlePower.getBoundsInParent())){
             PADDLE_POWER_Y_SPEED = PADDLE_POWER_Y_SPEED * -1;
-            myPaddle.setImage(longPaddleImage);
-            myPaddlePower.setImage(null);
+            myPaddlePower.powerTrigger(myPaddle, myPaddlePower, longPaddleImage);
         }
 
         /*
@@ -250,7 +244,7 @@ public class BrickBreaker extends Application{
         if(brickList.size() == 0) {
             if(levelCount == 1) {
                 makeLevel("level1.txt");
-                themeReset();
+                themeReset(); 
                 levelCount = 2;
             } else if(levelCount == 2) {
                 makeLevel("level2.txt");
@@ -360,10 +354,7 @@ public class BrickBreaker extends Application{
         myBouncer.setY(0);
         myPaddle.setX(0);
         myPaddle.setY(0);
-        myBouncer.setX(SIZE / 2 - myBouncer.getBoundsInLocal().getCenterX());
-        myBouncer.setY(SIZE - myPaddle.getBoundsInLocal().getHeight() - myBouncer.getBoundsInLocal().getHeight());
-        myPaddle.setX(SIZE / 2 - myPaddle.getBoundsInLocal().getCenterX());
-        myPaddle.setY(SIZE - myPaddle.getBoundsInLocal().getHeight());
+        level.center(myPaddle, myBouncer, SIZE);
         BOUNCER_X_SPEED = START_BOUNCER_X_SPEED;
         BOUNCER_Y_SPEED = START_BOUNCER_Y_SPEED;
     }
