@@ -1,7 +1,7 @@
-#Game Design
-##Benjamin Lu (bll32)
+# Game Design
+## Benjamin Lu (bll32)
 
-###Design Goals
+### Design Goals
 
 One of the main project goals is designing the basic components and classes
 of the game in a way that allowed for easy addition of features. In order
@@ -15,7 +15,7 @@ implement a highscore feature. A fun feature added at the very end
 was background music paired with sound effects when the bouncer collides
 with the paddle or breaks a brick.
 
-###High Level Design
+### High Level Design
 
 The fundamental class for Brickbreaker was the element class. All aspects
 of the game build off the existence of elements. Elements include the 
@@ -52,7 +52,7 @@ With the element and level classes the game could run. The main brickbreaker
 class contained the setting up of the game, the logic for element interaction and
 collision, and event handlers for paddle control and cheat code inputs.  
 
-###Assumptions 
+### Assumptions 
 
 An assumption made was that all level text files would contain the same
 amount of rows and columns. The level setup would break if the text file 
